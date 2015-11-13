@@ -10,15 +10,18 @@
 <h1>Wiki 說--Hello world!</h1>
 {% if categories %}
 	<h2>程式語言類別：</h2>
-	<ul>
+	<table>
 		{% for category in categories %}
-			<li>{{category.name}}</li>
+			<tr>
+ 				<td><a href={% url 'wiki:category' category.name %}>{{category.name}}</a></td>
+ 			</tr>
 		{% endfor %}
-	</ul>
+	</table>
 {% else %}
 	<p><strong>目前尚未設定程式語言類別。</strong></p>
 {% endif %}
 <br>
+<p><a href={% url 'wiki:addCategory' %}>新增類別</a></p>
 <p><a href={% url 'main:main' %}>回首頁</a></p>
 <br>
 </body>
