@@ -15,17 +15,6 @@
 		{% for category in categories %}
 			<tr>
  				<td><a href={% url 'wiki:category' category.name %}>{{category.name}}</a></td>
- 				<td>
-					<form action={% url 'wiki:updateCategory' category.id %}>
-						<input type="submit" value=修改>
-					</form>
-				</td>
- 				<td>
-					<form method=post action={% url 'wiki:deleteCategory' category.id %}>
-						{% csrf_token %}
-						<input type=submit value=刪除>
-					</form>
-				</td>
  			</tr>
 		{% endfor %}
 	</table>
