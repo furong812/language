@@ -53,4 +53,57 @@ def addPage(request, categoryName):
     page = form.save(commit=False)
     page.category = pageCategory
     page.save()
-    return redirect(reverse('wiki:category', args=(categoryName, )))    
+    return redirect(reverse('wiki:category', args=(categoryName, )))
+
+
+def deleteCategory(request, categoryID):
+    if request.method!='POST':
+        return wiki(request)
+    # request.method=='POST':
+    categoryToDelete = Category.objects.get(id=categoryID)
+    if categoryToDelete:
+        categoryToDelete.delete()
+    return redirect(reverse('wiki:wiki'))
+
+
+def deletePage(request, pageID):
+    if request.method!='POST':
+        return wiki(request)
+    # request.method=='POST':
+    pageToDelete = Page.objects.get(id=pageID)
+    if pageToDelete:
+        categoryName = pageToDelete.category.name
+        pageToDelete.delete()
+    else:
+        categoryName = ''
+    return redirect(reverse('wiki:category', args=(categoryName, )))
+def updateCategory(request, categoryID):
+    template = 'wiki/updateCategory.html'
+    try:
+        categoryToUpdate = Category.objects.get(id=categoryID)
+    except Category.DoesNotExist:
+        return wiki(request)
+    if request.method=='GET':
+        form = CategoryForm(instance=categoryToUpdate)
+        return render(request, template, {'form':form, 'category':categoryToUpdate})
+    # request.method=='POST'
+    form = CategoryForm(request.POST, instance=categoryToUpdate)
+    if not form.is_valid():
+        return render(request, template, {'form':form, 'category':categoryToUpdate})
+    categoryToUpdate.save()
+    return redirect(reverse('wiki:wiki'))
+def updatePage(request, categoryName, pageID):
+    template = 'wiki/updatePage.html'
+    try:
+        pageToUpdate = Page.objects.get(id=pageID)
+    except Page.DoesNotExist:
+        return category(request, categoryName)
+    if request.method=='GET':
+        form = PageForm(instance=pageToUpdate)
+        return render(request, template, {'form':form, 'page':pageToUpdate})
+    # request.method=='POST'
+    form = PageForm(request.POST, instance=pageToUpdate)
+    if not form.is_valid():
+        return render(request, template, {'form':form, 'page':pageToUpdate})
+    pageToUpdate.save()
+    return redirect(reverse('wiki:category', args=(categoryName,)))
